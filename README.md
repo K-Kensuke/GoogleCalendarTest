@@ -1,4 +1,4 @@
-#MyBot
+#GoogleCalendarTest
 GoogleCalendarのAPIを叩くサンプル
 
 ##Library
