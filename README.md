@@ -2,9 +2,9 @@
 GoogleCalendarのAPIを叩くサンプル
 
 ##Library
-##Auther
 google-api-python-client
 
+##Auther
 Kensuke Kousaka（@kensuke_linx）
 
 ##License
