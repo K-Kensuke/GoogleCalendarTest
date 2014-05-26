@@ -48,12 +48,17 @@ def main(argv):
 	# Returns entries on the user's calendar list.
 	calendars = service.calendarList().list().execute()
 
+	# dateで本日の日付を拾得
 	now = datetime.date.today()
-	print now
+	# dateをstringに変換
+	nowstr = now.strftime('%Y-%m-%d')
 
 	i = 0
+	startdate = None
+	enddate = None
 
-#CommentOut For Test
+
+
 # パラメータリスト https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=ja
 # singleEventsクエリをTrueにすることで，繰り返しの予定をバラして表示する
 	for calendar in calendars['items']:
@@ -63,61 +68,60 @@ def main(argv):
 
 		for event in events['items']:
 			print '----------------------------' + str(i) + '-------------------------------------'
-			# print 'event :'
-			# print event
 
-			print 'summary' in event
+			# event内にsummaryがあった場合
 			if 'summary' in event:
-				print 'event summary : '
-				print event['summary']
-
+				# eventのstartをeventStartに入れる
 				eventStart = event['start']
-				# print 'eventStart : '
-				# print eventStart
 
+				# eventStart内にdateTimeがあった場合
 				if 'dateTime' in eventStart:
-					start = eventStart['dateTime']
-					# print 'start : '
-					# print start
+					start = eventStart['dateTime'].split('T')
+					startdate = start[0]
 
-					startdate = start.split('T')
-					print 'start : '
-					print startdate[0]
+					# eventの日付が今日だった場合
+					# if nowstr in startdate[0]:
+					# 	print event['summary']
+
+				# eventStart内にdateTimeがなかった場合
 				else:
-					start = eventStart['date']
-					print 'start : '
-					print start
+					startdate = eventStart['date']
 
-				# start = eventStart['dateTime']
-				# print 'start : '
-				# print start
-
-				# startdate = start.split('T')
-				# print startdate[0]
+					# eventの日付が今日だった場合
+					# if nowstr in start:
+					# 	print event['summary']
 
 				eventEnd = event['end']
-				# print 'eventEnd : '
-				# print eventEnd
 
 				if 'dateTime' in eventEnd:
-					end = eventEnd['dateTime']
-					# print 'end : '
-					# print end
-
-					enddate = end.split('T')
-					print 'end : '
-					print enddate[0]
+					end = eventEnd['dateTime'].split('T')
+					enddate = end[0]
 				else:
-					end = eventEnd['date']
-					print 'end : '
-					print end
+					enddate = eventEnd['date']
 
-				# end = eventEnd['dateTime']
-				# print 'end : '
-				# print end
-				#
-				# enddate = end.split('T')
-				# print enddate[0]
+				# 文字列から日付に変換
+				tdatetime = datetime.datetime.strptime(startdate, '%Y-%m-%d')
+				tStartDate = datetime.date(tdatetime.year, tdatetime.month, tdatetime.day)
+
+				tdatetime = datetime.datetime.strptime(enddate, '%Y-%m-%d')
+				tEndDate = datetime.date(tdatetime.year, tdatetime.month, tdatetime.day)
+
+				diffDate = (tEndDate - tStartDate).days
+
+				if diffDate == 0:
+					if nowstr in startdate:
+						print event['summary']
+				else:
+					num = 0
+					while num <= diffDate:
+						tmp = tStartDate + datetime.timedelta(days=num)
+						tmpstr = tmp.strftime('%Y-%m-%d')
+
+						if nowstr in tmpstr:
+							print event['summary']
+
+						num += 1
+
 				i = i + 1
 
 
