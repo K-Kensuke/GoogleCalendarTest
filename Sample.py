@@ -43,7 +43,7 @@ def main(argv):
 
 	http = httplib2.Http()
 	credentials.authorize(http)
-	service = build('calendar', 'v3', http=http,)
+	service = build('calendar', 'v3', http=http, )
 
 	# Returns entries on the user's calendar list.
 	calendars = service.calendarList().list().execute()
@@ -53,21 +53,13 @@ def main(argv):
 	# dateをstringに変換
 	nowstr = now.strftime('%Y-%m-%d')
 
-	i = 0
-	startdate = None
-	enddate = None
 
-
-
-# パラメータリスト https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=ja
-# singleEventsクエリをTrueにすることで，繰り返しの予定をバラして表示する
+	# パラメータリスト https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=ja
+	# singleEventsクエリをTrueにすることで，繰り返しの予定をバラして表示する
 	for calendar in calendars['items']:
 		events = service.events().list(calendarId=calendar['id'], singleEvents=True, orderBy='startTime').execute()
-		print 'Calendar ID is : ' + calendar['summary']
-		print calendar['id']
 
 		for event in events['items']:
-			print '----------------------------' + str(i) + '-------------------------------------'
 
 			# event内にsummaryがあった場合
 			if 'summary' in event:
@@ -78,18 +70,9 @@ def main(argv):
 				if 'dateTime' in eventStart:
 					start = eventStart['dateTime'].split('T')
 					startdate = start[0]
-
-					# eventの日付が今日だった場合
-					# if nowstr in startdate[0]:
-					# 	print event['summary']
-
 				# eventStart内にdateTimeがなかった場合
 				else:
 					startdate = eventStart['date']
-
-					# eventの日付が今日だった場合
-					# if nowstr in start:
-					# 	print event['summary']
 
 				eventEnd = event['end']
 
@@ -121,8 +104,6 @@ def main(argv):
 							print event['summary']
 
 						num += 1
-
-				i = i + 1
 
 
 if __name__ == '__main__':
