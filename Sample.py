@@ -8,31 +8,43 @@ http://opensource.org/licenses/mit-license.php
 """
 __author__ = 'Kensuke Kousaka'
 
-import time
+import gflags
 import httplib2
-from apiclient.discovery import build
+import codecs
+import sys
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from oauth2client.tools import run
+from apiclient.discovery import build
 
 import key
 
-def main():
-    FLOW = OAuth2WebServerFlow(
-        client_id=key.client_id,
-        client_secret=key.client_secret,
-        scope='https://www.googleapis.com/auth/calendar',
-        user_agent='CalendarSample/v1'
-    )
+def main(argv):
+	sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+	try:
+		argv = gflags.FLAGS(argv)
+	except gflags.FlagsError, e:
+		print ""
+		sys.exit()
 
-    storage = Storage('calendar.dat')
-    credentials = storage.get()
-    if credentials is None or credentials.invalid == True:
-        credentials = run(FLOW, storage)
+	storage = Storage('calendar.dat')
+	credentials = storage.get()
+	if not credentials or credentials.invalid:
+		flow = OAuth2WebServerFlow(
+			client_id=key.client_id,
+			client_secret=key.client_secret,
+			scope=['https://www.googleapis.com/auth/calendar'],
+			user_agent='API Project/1.0'
+		)
+		credentials = run(flow, storage)
 
-    http = httplib2.Http()
-    http = credentials.authorize(http)
+	http = httplib2.Http()
+	credentials.authorize(http)
+	service = build('calendar', 'v3', http=http,)
 
-    service = build(serviceName='calendar', version='v3',http=http)
+	calendars = service.calendarList().list().execute()
+	for calendar in calendars['items']:
+		print "%s %s" % (calendar['id'], calendar['summary'])
+
 if __name__ == '__main__':
-    main()
+	main(sys.argv)
