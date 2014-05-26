@@ -42,9 +42,23 @@ def main(argv):
 	credentials.authorize(http)
 	service = build('calendar', 'v3', http=http,)
 
+	# Returns entries on the user's calendar list.
 	calendars = service.calendarList().list().execute()
+
+
 	for calendar in calendars['items']:
-		print "%s %s" % (calendar['id'], calendar['summary'])
+		events = service.events().list(calendarId=calendar['id']).execute()
+		print 'Calendar ID is : ' + calendar['summary']
+		for event in events['items']:
+			print '----------------------------------------------------------------------'
+			print event
+			print event['summary']
+			eventStart = event['start']
+			start = eventStart['dateTime']
+			print start
+			eventEnd = event['end']
+			end = eventEnd['dateTime']
+			print end
 
 if __name__ == '__main__':
 	main(sys.argv)
