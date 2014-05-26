@@ -51,22 +51,41 @@ def main(argv):
 	now = datetime.date.today()
 	print now
 
+	i = 0
 
+#TODO startやend内要素でdatetimeで表される場合とdateのみで表される場合の両方に対応する
 	for calendar in calendars['items']:
 		events = service.events().list(calendarId=calendar['id']).execute()
 		print 'Calendar ID is : ' + calendar['summary']
 		for event in events['items']:
-			print '----------------------------------------------------------------------'
+			print '----------------------------' + str(i) + '-------------------------------------'
+			print 'event :'
 			print event
+			print 'event summary : '
 			print event['summary']
+
 			eventStart = event['start']
+			print 'eventStart : '
+			print eventStart
+
 			start = eventStart['dateTime']
+			print 'start : '
+			print start
+
 			startdate = start.split('T')
 			print startdate[0]
+
 			eventEnd = event['end']
+			print 'eventEnd : '
+			print eventEnd
+
 			end = eventEnd['dateTime']
+			print 'end : '
+			print end
+
 			enddate = end.split('T')
 			print enddate[0]
+			i = i + 1
 
 if __name__ == '__main__':
 	main(sys.argv)
