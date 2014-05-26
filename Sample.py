@@ -19,6 +19,9 @@ from apiclient.discovery import build
 
 import key
 
+import datetime
+
+
 def main(argv):
 	sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 	try:
@@ -45,6 +48,9 @@ def main(argv):
 	# Returns entries on the user's calendar list.
 	calendars = service.calendarList().list().execute()
 
+	now = datetime.date.today()
+	print now
+
 
 	for calendar in calendars['items']:
 		events = service.events().list(calendarId=calendar['id']).execute()
@@ -55,10 +61,12 @@ def main(argv):
 			print event['summary']
 			eventStart = event['start']
 			start = eventStart['dateTime']
-			print start
+			startdate = start.split('T')
+			print startdate[0]
 			eventEnd = event['end']
 			end = eventEnd['dateTime']
-			print end
+			enddate = end.split('T')
+			print enddate[0]
 
 if __name__ == '__main__':
 	main(sys.argv)
