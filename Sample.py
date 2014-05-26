@@ -70,6 +70,7 @@ def main(argv):
 				if 'dateTime' in eventStart:
 					start = eventStart['dateTime'].split('T')
 					startdate = start[0]
+					starttime = start[1]
 				# eventStart内にdateTimeがなかった場合
 				else:
 					startdate = eventStart['date']
@@ -94,6 +95,9 @@ def main(argv):
 				if diffDate == 0:
 					if nowstr in startdate:
 						print event['summary']
+						if starttime is not None:
+								print starttime
+
 				else:
 					num = 0
 					while num <= diffDate:
@@ -102,7 +106,8 @@ def main(argv):
 
 						if nowstr in tmpstr:
 							print event['summary']
-
+							if starttime is not None:
+								print starttime
 						num += 1
 
 
