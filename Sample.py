@@ -53,39 +53,73 @@ def main(argv):
 
 	i = 0
 
-#TODO startやend内要素でdatetimeで表される場合とdateのみで表される場合の両方に対応する
+#CommentOut For Test
+# パラメータリスト https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=ja
+# singleEventsクエリをTrueにすることで，繰り返しの予定をバラして表示する
 	for calendar in calendars['items']:
-		events = service.events().list(calendarId=calendar['id']).execute()
+		events = service.events().list(calendarId=calendar['id'], singleEvents=True, orderBy='startTime').execute()
 		print 'Calendar ID is : ' + calendar['summary']
+		print calendar['id']
+
 		for event in events['items']:
 			print '----------------------------' + str(i) + '-------------------------------------'
-			print 'event :'
-			print event
-			print 'event summary : '
-			print event['summary']
+			# print 'event :'
+			# print event
 
-			eventStart = event['start']
-			print 'eventStart : '
-			print eventStart
+			print 'summary' in event
+			if 'summary' in event:
+				print 'event summary : '
+				print event['summary']
 
-			start = eventStart['dateTime']
-			print 'start : '
-			print start
+				eventStart = event['start']
+				# print 'eventStart : '
+				# print eventStart
 
-			startdate = start.split('T')
-			print startdate[0]
+				if 'dateTime' in eventStart:
+					start = eventStart['dateTime']
+					# print 'start : '
+					# print start
 
-			eventEnd = event['end']
-			print 'eventEnd : '
-			print eventEnd
+					startdate = start.split('T')
+					print 'start : '
+					print startdate[0]
+				else:
+					start = eventStart['date']
+					print 'start : '
+					print start
 
-			end = eventEnd['dateTime']
-			print 'end : '
-			print end
+				# start = eventStart['dateTime']
+				# print 'start : '
+				# print start
 
-			enddate = end.split('T')
-			print enddate[0]
-			i = i + 1
+				# startdate = start.split('T')
+				# print startdate[0]
+
+				eventEnd = event['end']
+				# print 'eventEnd : '
+				# print eventEnd
+
+				if 'dateTime' in eventEnd:
+					end = eventEnd['dateTime']
+					# print 'end : '
+					# print end
+
+					enddate = end.split('T')
+					print 'end : '
+					print enddate[0]
+				else:
+					end = eventEnd['date']
+					print 'end : '
+					print end
+
+				# end = eventEnd['dateTime']
+				# print 'end : '
+				# print end
+				#
+				# enddate = end.split('T')
+				# print enddate[0]
+				i = i + 1
+
 
 if __name__ == '__main__':
 	main(sys.argv)
