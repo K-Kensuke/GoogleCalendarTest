@@ -49,7 +49,8 @@ def main(argv):
 	calendars = service.calendarList().list().execute()
 
 	# dateで本日の日付を拾得
-	now = datetime.date.today()
+	# 表示したい日付は，ここでイジれる（timedeltaに0を渡すと今日のイベント表示，1だと明日…）
+	now = datetime.date.today() + datetime.timedelta(18)
 	# dateをstringに変換
 	nowstr = now.strftime('%Y-%m-%d')
 
