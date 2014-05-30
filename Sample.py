@@ -30,7 +30,7 @@ def main(argv):
         print ""
         sys.exit()
 
-    storage = Storage('calendar.dat')
+    storage = Storage('/Users/kousaka/PycharmProjects/GoogleCalendarTest/calendar.dat')
     credentials = storage.get()
     if not credentials or credentials.invalid:
         flow = OAuth2WebServerFlow(
